@@ -80,6 +80,17 @@
 	  }
 	
 	  _createClass(Main, [{
+	    key: 'formattedTweet',
+	    value: function formattedTweet(tweetsList) {
+	      var formattedList = tweetsList.map(function (tweet) {
+	        tweet.formattedDate = moment(tweet.created_at).fromNow();
+	        return tweet;
+	      });
+	      return {
+	        tweetsList: tweetsList
+	      };
+	    }
+	  }, {
 	    key: 'addTweet',
 	    value: function addTweet(tweetToAdd) {
 	      var _this2 = this;
@@ -87,7 +98,7 @@
 	      $.post('/tweets', { body: tweetToAdd }).success(function (savedTweet) {
 	        var newTweetsList = _this2.state.tweetsList;
 	        newTweetsList.unshift(savedTweet);
-	        _this2.setState({ tweetsList: newTweetsList });
+	        _this2.setState(_this2.formattedTweet(newTweetsList));
 	      }).error(function (error) {
 	        return console.log(error);
 	      });
@@ -98,7 +109,7 @@
 	      var _this3 = this;
 	
 	      $.ajax('/tweets').success(function (data) {
-	        return _this3.setState({ tweetsList: data });
+	        return _this3.setState(_this3.formattedTweet(data));
 	      }).error(function (error) {
 	        return console.log(error);
 	      });
@@ -294,15 +305,16 @@
 	      return React.createElement(
 	        "li",
 	        { className: "collection-item avatar" },
-	        React.createElement(
-	          "i",
-	          { className: "material-icons circle" },
-	          "person_pin"
-	        ),
+	        React.createElement("img", { className: "circle", src: this.props.gravatar }),
 	        React.createElement(
 	          "span",
 	          { className: "title" },
 	          this.props.name
+	        ),
+	        React.createElement(
+	          "time",
+	          null,
+	          this.props.formattedDate
 	        ),
 	        React.createElement(
 	          "p",
