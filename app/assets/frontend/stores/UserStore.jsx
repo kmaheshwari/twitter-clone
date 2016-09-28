@@ -7,7 +7,10 @@ let _followedIds = [];
 
 class UserEventEmitter extends AppEventEmitter {
   getAll() {
-    return _users;
+    return _users.map( user => {
+      user.following = _followedIds.indexOf(user.id) >= 0;
+      return user;
+    });
   }
 }
 
@@ -20,7 +23,7 @@ AppDispatcher.register( action => {
       UserStore.emitChange();
       break;
     case ActionTypes.RECIEVED_ONE_FOLLOWER:
-      _followedIds.push(action.rawFollower);
+      _followedIds.push(action.rawFollower.user_id);
       UserStore.emitChange();
       break;
     default:
